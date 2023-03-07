@@ -1,5 +1,7 @@
-from .model import train_model, compute_model_metrics, inference
+import sys
+import os
 from sklearn.ensemble import RandomForestClassifier
+from starter.ml.model import train_model, compute_model_metrics, inference
 
 def test_train_model():
     X_train = [[0, 0], [0, 1], [1, 0], [1, 1]]
