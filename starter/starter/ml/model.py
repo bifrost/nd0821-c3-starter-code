@@ -1,14 +1,15 @@
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.ensemble import RandomForestClassifier
+import logging
 
 # Optional: implement hyperparameter tuning.
-def train_model(X_train, y_train):
+def train_model(x_train, y_train):
     """
     Trains a machine learning model and returns it.
 
     Inputs
     ------
-    X_train : np.array
+    x_train : np.array
         Training data.
     y_train : np.array
         Labels.
@@ -19,18 +20,18 @@ def train_model(X_train, y_train):
     """
 
     clf = RandomForestClassifier()
-    clf.fit(X_train, y_train)
+    clf.fit(x_train, y_train)
 
     return clf
 
 
-def compute_model_metrics(y, preds):
+def compute_model_metrics(y_data, preds):
     """
     Validates the trained machine learning model using precision, recall, and F1.
 
     Inputs
     ------
-    y : np.array
+    y_data : np.array
         Known labels, binarized.
     preds : np.array
         Predicted labels, binarized.
@@ -40,24 +41,89 @@ def compute_model_metrics(y, preds):
     recall : float
     fbeta : float
     """
-    fbeta = fbeta_score(y, preds, beta=1, zero_division=1)
-    precision = precision_score(y, preds, zero_division=1)
-    recall = recall_score(y, preds, zero_division=1)
+    fbeta = fbeta_score(y_data, preds, beta=1, zero_division=1)
+    precision = precision_score(y_data, preds, zero_division=1)
+    recall = recall_score(y_data, preds, zero_division=1)
     return precision, recall, fbeta
 
 
-def inference(model, X):
+def inference(model, x_data):
     """ Run model inferences and return the predictions.
 
     Inputs
     ------
-    model : ???
+    model : RandomForestClassifier
         Trained machine learning model.
-    X : np.array
+    x_data : np.array
         Data used for prediction.
     Returns
     -------
     preds : np.array
         Predictions from the model.
     """
-    return model.predict(X)
+    return model.predict(x_data)
+
+
+def format_bias(ratio, tolerance):
+    """ format bias """
+
+    if abs(ratio-1.0)>tolerance:
+        #return f"(\033[91m{ratio:0.3f}\033[0m)"
+        return f"({ratio:0.3f})<====="
+    else:
+        return f"({ratio:0.3f})"
+
+
+def print_metrics(precision, recall, fbeta, g_precision, g_recall, g_fbeta, tolerance):
+    """ Print and format precision, recall, fbeta and their bias """
+
+    logging.info("precision: %.3f %s", precision, format_bias(precision/g_precision, tolerance))
+    logging.info("recall: %.3f %s", recall, format_bias(recall/g_recall, tolerance))
+    logging.info("fbeta: %.3f %s", fbeta, format_bias(fbeta/g_fbeta, tolerance))
+    logging.info("--------------")
+
+
+def get_model_metrics(data, model, process_data):
+    """ Get model matrices """
+
+    X_slice, y_slice, _, _ = process_data(data)
+    y_pred = inference(model, X_slice)
+    return compute_model_metrics(y_slice, y_pred)
+
+
+def slice_model_metrics(data, categorical_features, model, process_data, tolerance=0.25):
+    """ Calculating and print metrics on slices of the dataset.
+
+    Inputs
+    ------
+    data : pd.DataFrame
+        Dataframe containing the features and label.
+    categorical_features: list[str]
+        List containing the names of the categorical features (default=[])
+    model: RandomForestClassifier
+        A trained model
+    process_data: lambda
+        Process the data used in the machine learning pipeline.
+    tolerance: float
+        Threshold for marking a bias ration `abs(ratio-1.0)>tolerance`
+
+    Returns
+    -------
+    None
+
+    """
+
+    logging.info("### global metrics ###")
+    g_precision, g_recall, g_fbeta = get_model_metrics(data, model, process_data)
+    print_metrics(g_precision, g_recall, g_fbeta, g_precision, g_recall, g_fbeta, tolerance)
+
+    for column in categorical_features:
+        for cls in data[column].unique():
+            data_slice = data[data[column] == cls]
+
+            logging.info("### %s : %s ###", column, cls)
+            precision, recall, fbeta = get_model_metrics(data_slice, model, process_data)
+            print_metrics(precision, recall, fbeta, g_precision, g_recall, g_fbeta, tolerance)
+
+
+

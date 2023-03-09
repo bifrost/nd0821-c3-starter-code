@@ -1,16 +1,17 @@
 # Script to train machine learning model.
 
+from ml.model import train_model, slice_model_metrics
+from ml.data import process_data
 from sklearn.model_selection import train_test_split
 import os
 import pickle
 import logging
+from functools import partial
 
 # Add the necessary imports for the starter code.
 import pandas as pd
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-from ml.data import process_data
-from ml.model import train_model, compute_model_metrics, inference
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -36,7 +37,6 @@ console.setFormatter(formatter)
 logging.getLogger('').addHandler(console)
 
 logger = logging.getLogger(__name__)
-
 
 
 # Add code to load in the data.
@@ -77,32 +77,33 @@ logging.info(f"Save model: {MODEL_PATH}")
 with open(MODEL_PATH, 'wb') as file:
     pickle.dump(mode, file)
 
-logging.info("Predict test data")
-y_pred = inference(classifier, X_train)
+# make a partial function where X is not "baked in"
+process_data_partial = partial(process_data,
+                               categorical_features=cat_features,
+                               label="salary",
+                               training=False,
+                               encoder=encoder,
+                               lb=lb)
 
-logging.info("Compute model metrics")
-precision, recall, fbeta = compute_model_metrics(y_train, y_pred)
+slice_features = [
+    #"workclass",
+    #"education",
+    #"marital-status",
+    #"occupation",
+    #"relationship",
+    "race",
+    "sex",
+    #"native-country",
+]
 
-logging.info(f"### Train ###")
-logging.info(f"precision: {precision}")
-logging.info(f"recall: {recall}")
-logging.info(f"fbeta: {fbeta}")
-logging.info(f"--------------")
+logging.info("*** Slices on train ***")
+slice_model_metrics(train, slice_features, classifier, process_data_partial, 0.1)
+
+logging.info("***********************************************")
 
 # Test model
 logging.info("Process test data")
-X_test, y_test, _, _ = process_data(
-    test, categorical_features=cat_features, label="salary", training=False, encoder=encoder, lb=lb
-)
+X_test, y_test, _, _ = process_data_partial(test)
 
-logging.info("Predict test data")
-y_pred = inference(classifier, X_test)
-
-logging.info("Compute model metrics")
-precision, recall, fbeta = compute_model_metrics(y_test, y_pred)
-
-logging.info(f"### Test ###")
-logging.info(f"precision: {precision}")
-logging.info(f"recall: {recall}")
-logging.info(f"fbeta: {fbeta}")
-logging.info(f"--------------")
+logging.info("*** Slices on test ***")
+slice_model_metrics(test, slice_features, classifier, process_data_partial, 0.2)
