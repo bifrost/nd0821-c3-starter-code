@@ -46,6 +46,10 @@ data = pd.read_csv(DATA_PATH)
 # Optional enhancement, use K-fold cross validation instead of a train-test split.
 train, test = train_test_split(data, test_size=0.20)
 
+logging.info("Data size %d", len(data))
+logging.info("Train size %d", len(train))
+logging.info("Test size %d", len(test))
+
 cat_features = [
     "workclass",
     "education",
