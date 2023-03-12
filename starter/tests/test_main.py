@@ -10,7 +10,7 @@ def test_api_greeting():
     result = client.get("/")
 
     assert result.status_code == 200
-    assert result.json() == {'message':'Hello World!'}
+    assert result.json() == {'message': 'Hello World!' }
 
 def test_api_predict_less_or_equal_50K():
     ''' Test predict endpoint '''

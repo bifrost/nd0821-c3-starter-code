@@ -6,7 +6,6 @@ from sklearn.model_selection import train_test_split
 import os
 import pickle
 import logging
-from functools import partial
 
 # Add the necessary imports for the starter code.
 import pandas as pd
