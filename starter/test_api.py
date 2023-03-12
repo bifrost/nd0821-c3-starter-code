@@ -6,7 +6,7 @@ census = [{
     'workclass':'State-gov',
     'fnlgt':77516,
     'education':'Bachelors',
-    'education_num':13,
+    'education-num':13,
     'marital-status':'Never-married',
     'occupation':'Adm-clerical',
     'relationship':'Not-in-family',
