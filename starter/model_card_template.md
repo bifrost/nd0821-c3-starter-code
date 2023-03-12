@@ -39,47 +39,48 @@ Metrics for slicing data on race and sex.
 We do not see any changes on the train data due to 100% precision an recall, see [log file](file://./log/results.log).
 
 **Test data**
-The following is the metrics for the sliced test data. The value in parentheses is the fraction of current value compared to the global value and will be used to measure the bias for the respective metric. Metrics with an absolute bias that differ more than 20% will be marked.
+The following is the metrics for the sliced test data. The value in parentheses is the fraction of current value compared to the global value and will be used to measure the bias for the respective metric. Metrics with an absolute bias that differ more than 25% will be marked with "<=====".
 
 **Global**
-precision: 0.722 (1.000)
-recall: 0.642 (1.000)
-fbeta: 0.680 (1.000)
+precision: 0.723 (1.000)
+recall: 0.622 (1.000)
+fbeta: 0.669 (1.000)
 
 **race : White**
-precision: 0.721 (0.999)
-recall: 0.646 (1.005)
-fbeta: 0.681 (1.002)
+precision: 0.729 (1.008)
+recall: 0.628 (1.009)
+fbeta: 0.675 (1.009)
 
 **race : Black**
-precision: 0.754 (1.044)
-recall: 0.645 (1.004)
-fbeta: 0.695 (1.022)
+precision: 0.678 (0.938)
+recall: 0.513 (0.824)
+fbeta: 0.584 (0.873)
 
 **race : Asian-Pac-Islander**
-precision: 0.700 (0.969)
-recall: 0.625 (0.973)
-fbeta: 0.660 (0.971)
+precision: 0.660 (0.913)
+recall: 0.646 (1.038)
+fbeta: 0.653 (0.976)
 
 **race : Amer-Indian-Eskimo**
-precision: 0.667 (0.923)
-recall: 0.222 (0.346)<=====
-fbeta: 0.333 (0.490)<=====
+precision: 0.429 (0.593)<=====
+recall: 0.600 (0.964)
+fbeta: 0.500 (0.748)<=====
 
 **race : Other**
-precision: 0.750 (1.039)
-recall: 0.600 (0.934)
-fbeta: 0.667 (0.981)
+precision: 0.750 (1.038)
+recall: 0.500 (0.803)
+fbeta: 0.600 (0.897)
 
 **sex : Male**
-precision: 0.724 (1.002)
-recall: 0.660 (1.028)
-fbeta: 0.691 (1.016)
+precision: 0.722 (1.000)
+recall: 0.633 (1.017)
+fbeta: 0.675 (1.009)
 
 **sex : Female**
-precision: 0.710 (0.984)
-recall: 0.544 (0.847)
-fbeta: 0.616 (0.906)
+precision: 0.724 (1.001)
+recall: 0.557 (0.894)
+fbeta: 0.629 (0.941)
+
 
 
 see [log file](file://./log/results.log).

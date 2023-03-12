@@ -17,7 +17,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(ROOT_DIR, '..', 'log', 'results.log')
 DATA_PATH = os.path.join(ROOT_DIR, '..', 'data', 'census.csv')
 MODEL_PATH = os.path.join(ROOT_DIR, '..', 'model', 'model.pkl')
-
+SLICE_PATH = os.path.join(ROOT_DIR, '..', 'data', 'slice_output.txt')
 
 # set up logging
 logging.basicConfig(
@@ -106,4 +106,6 @@ slice_model_metrics(train, slice_features, classifier, process_data_partial)
 logging.info("***********************************************")
 
 logging.info("*** Slices on test ***")
-slice_model_metrics(test, slice_features, classifier, process_data_partial)
+with open(SLICE_PATH, 'w', encoding="utf-8") as file:
+    file.write("*** Slices on test ***\n")
+    slice_model_metrics(test, slice_features, classifier, process_data_partial, file=file)

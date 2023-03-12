@@ -96,7 +96,8 @@ def print_metrics(
         g_precision,
         g_recall,
         g_fbeta,
-        tolerance):
+        tolerance,
+        file=None):
     """ Print and format precision, recall, fbeta and their bias """
 
     logging.info(
@@ -106,6 +107,9 @@ def print_metrics(
             precision /
             g_precision,
             tolerance))
+    if file:
+        file.write(f"precision: {precision:0.3f}\n")
+
     logging.info(
         "recall: %.3f %s",
         recall,
@@ -113,6 +117,9 @@ def print_metrics(
             recall /
             g_recall,
             tolerance))
+    if file:
+        file.write(f"recall: {recall:0.3f}\n")
+
     logging.info(
         "fbeta: %.3f %s",
         fbeta,
@@ -120,6 +127,9 @@ def print_metrics(
             fbeta /
             g_fbeta,
             tolerance))
+    if file:
+        file.write(f"recall: {fbeta:0.3f}\n")
+
     logging.info("--------------")
 
 
@@ -136,7 +146,8 @@ def slice_model_metrics(
         categorical_features,
         model,
         process_data,
-        tolerance=0.25):
+        tolerance=0.25,
+        file=None):
     """ Calculating and print metrics on slices of the dataset.
 
     Inputs
@@ -151,6 +162,8 @@ def slice_model_metrics(
         Process the data used in the machine learning pipeline.
     tolerance: float
         Threshold for marking a bias ration `abs(ratio-1.0)>tolerance`
+    file:
+        File to write slice data
 
     Returns
     -------
@@ -175,6 +188,9 @@ def slice_model_metrics(
             data_slice = data[data[column] == cls]
 
             logging.info("### %s : %s ###", column, cls)
+            if file:
+                file.write(f"### {column=} : {cls=} ###\n")
+
             precision, recall, fbeta = get_model_metrics(
                 data_slice, model, process_data)
             print_metrics(
@@ -184,4 +200,5 @@ def slice_model_metrics(
                 g_precision,
                 g_recall,
                 g_fbeta,
-                tolerance)
+                tolerance,
+                file)
