@@ -14,8 +14,15 @@ class Salary(str, Enum):
     GREATER_THAN_50K = ">50K"
 
 class Greeting(BaseModel):
+    ''' Data class for greeting '''
     message: str
+
+# Note: Field(alias=..) seems not to work as intended,
+# the class cannot be initialized with defined props.
+# A workaround has been added to get_classifier method.
+
 class Census(BaseModel):
+    ''' Data class for Census '''
     age: int
     workclass: str
     fnlgt: int

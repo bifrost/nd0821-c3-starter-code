@@ -10,7 +10,7 @@ def test_api_greeting():
     result = client.get("/")
 
     assert result.status_code == 200
-    assert result.content == b'{"message":"Hello World!"}'
+    assert result.json() == {'message':'Hello World!'}
 
 def test_api_predict_less_or_equal_50K():
     ''' Test predict endpoint '''
@@ -33,7 +33,7 @@ def test_api_predict_less_or_equal_50K():
     result = client.post("/", json=data)
 
     assert result.status_code == 200
-    assert result.content == b'["<=50K"]'
+    assert result.json() == ['<=50K']
 
 def test_api_predict_greater_50K():
     ''' Test predict endpoint '''
@@ -56,4 +56,4 @@ def test_api_predict_greater_50K():
     result = client.post("/", json=data)
 
     assert result.status_code == 200
-    assert result.content == b'[">50K"]'
+    assert result.json() == ['>50K']
