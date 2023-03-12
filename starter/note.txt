@@ -1,1 +1,2 @@
 pytest -rA -W error::UserWarning
+autopep8 --in-place --aggressive --aggressive model.py

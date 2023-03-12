@@ -108,4 +108,9 @@ logging.info("***********************************************")
 logging.info("*** Slices on test ***")
 with open(SLICE_PATH, 'w', encoding="utf-8") as file:
     file.write("*** Slices on test ***\n")
-    slice_model_metrics(test, slice_features, classifier, process_data_partial, file=file)
+    slice_model_metrics(
+        test,
+        slice_features,
+        classifier,
+        process_data_partial,
+        file=file)
