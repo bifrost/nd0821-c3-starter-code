@@ -1,11 +1,7 @@
-python==3.8.16
-pandas
-scikit-learn
-pytest
-requests
+numpy==1.23.4
+pandas==1.5.3
+scikit-learn==0.23.2
 fastapi==0.63.0
-pydantic
-uvicorn
-gunicorn
-pandas_profiling
-httpx
+pydantic==1.10.5
+uvicorn==0.20.0
+httpx==0.23.3
