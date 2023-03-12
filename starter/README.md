@@ -1,5 +1,8 @@
 # Files for the Project Submissions
 
+The exploratory data analysis:
+* eda.ipynb
+
 The slice output:
 * slice_output.txt
 * log/results.log
@@ -9,11 +12,15 @@ The tests:
 * tests/test_main.py
 
 Model card:
-* model_card_template.md
+* model_card.md
 
 The png images for the API test:
-* example.png
-* live_post.png
+* screenshots/example.png
+* screenshots/live_post.png
+
+The test script for the POST:
+* live_post.py
 
 **Note**: The project was deployed on render
 https://cansus.onrender.com/
+
