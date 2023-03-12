@@ -3,7 +3,7 @@ from enum import Enum
 from typing import List
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import os
 import pickle
 import pandas as pd
@@ -30,16 +30,16 @@ class Census(BaseModel):
     workclass: str
     fnlgt: int
     education: str
-    education_num: int
-    marital_status: str
+    education_num: int = Field(alias='education-num')
+    marital_status: str = Field(alias='marital-status')
     occupation: str
     relationship: str
     race: str
     sex: str
-    capital_gain: int
-    capital_loss: int
-    hours_per_week: int
-    native_country: str
+    capital_gain: int = Field(alias='capital-gain')
+    capital_loss: int = Field(alias='capital-loss')
+    hours_per_week: int = Field(alias='hours-per-week')
+    native_country: str = Field(alias='native-country')
 
 
 app = FastAPI()
@@ -53,11 +53,9 @@ with open(MODEL_PATH, 'rb') as file:
 
 def get_classifier(model):
     ''' get classifier for prediction '''
-    # match cat_features with Census model
-    cat_features = [c.replace('-', '_') for c in model['cat_features']]
     lb = model['lb']
     data_processor = get_data_processor(
-        cat_features=cat_features,
+        cat_features=model['cat_features'],
         encoder=model['encoder'],
         lb=lb)
     return model['classifier'], data_processor, lb
