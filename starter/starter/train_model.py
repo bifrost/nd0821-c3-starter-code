@@ -1,6 +1,6 @@
 # Script to train machine learning model.
 
-from ml.model import train_model, slice_model_metrics
+from ml.model import train_model, slice_model_metrics, get_data_processor
 from ml.data import process_data
 from sklearn.model_selection import train_test_split
 import os
@@ -71,23 +71,19 @@ X_train, y_train, encoder, lb = process_data(
 logging.info("Train model")
 classifier = train_model(X_train, y_train)
 
-mode = {
+model = {
     "classifier": classifier,
     "encoder": encoder,
-    "lb": lb
+    "lb": lb,
+    "cat_features": cat_features
 }
 
 logging.info(f"Save model: {MODEL_PATH}")
 with open(MODEL_PATH, 'wb') as file:
-    pickle.dump(mode, file)
+    pickle.dump(model, file)
 
 # make a partial function where X is not "baked in"
-process_data_partial = partial(process_data,
-                               categorical_features=cat_features,
-                               label="salary",
-                               training=False,
-                               encoder=encoder,
-                               lb=lb)
+process_data_partial = get_data_processor(cat_features=cat_features, encoder=encoder, lb=lb, label="salary")
 
 slice_features = [
     #"workclass",
@@ -101,13 +97,9 @@ slice_features = [
 ]
 
 logging.info("*** Slices on train ***")
-slice_model_metrics(train, slice_features, classifier, process_data_partial, 0.1)
+slice_model_metrics(train, slice_features, classifier, process_data_partial)
 
 logging.info("***********************************************")
 
-# Test model
-logging.info("Process test data")
-X_test, y_test, _, _ = process_data_partial(test)
-
 logging.info("*** Slices on test ***")
-slice_model_metrics(test, slice_features, classifier, process_data_partial, 0.2)
+slice_model_metrics(test, slice_features, classifier, process_data_partial)

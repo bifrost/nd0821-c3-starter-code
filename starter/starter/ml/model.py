@@ -1,5 +1,7 @@
+from functools import partial
 from sklearn.metrics import fbeta_score, precision_score, recall_score
 from sklearn.ensemble import RandomForestClassifier
+from .data import process_data
 import logging
 
 # Optional: implement hyperparameter tuning.
@@ -62,6 +64,16 @@ def inference(model, x_data):
         Predictions from the model.
     """
     return model.predict(x_data)
+
+def get_data_processor(cat_features, encoder, lb, label=None):
+    ''' get data processor '''
+
+    return partial(process_data,
+                categorical_features=cat_features,
+                label=label,
+                training=False,
+                encoder=encoder,
+                lb=lb)
 
 
 def format_bias(ratio, tolerance):
