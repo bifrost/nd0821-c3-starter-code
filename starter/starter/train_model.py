@@ -43,7 +43,8 @@ logger = logging.getLogger(__name__)
 logging.info(f"Load data: {DATA_PATH}")
 data = pd.read_csv(DATA_PATH)
 
-# Optional enhancement, use K-fold cross validation instead of a train-test split.
+# Optional enhancement, use K-fold cross validation instead of a
+# train-test split.
 train, test = train_test_split(data, test_size=0.20)
 
 logging.info("Data size %d", len(data))
@@ -83,17 +84,21 @@ with open(MODEL_PATH, 'wb') as file:
     pickle.dump(model, file)
 
 # make a partial function where X is not "baked in"
-process_data_partial = get_data_processor(cat_features=cat_features, encoder=encoder, lb=lb, label="salary")
+process_data_partial = get_data_processor(
+    cat_features=cat_features,
+    encoder=encoder,
+    lb=lb,
+    label="salary")
 
 slice_features = [
-    #"workclass",
-    #"education",
-    #"marital-status",
-    #"occupation",
-    #"relationship",
+    # "workclass",
+    # "education",
+    # "marital-status",
+    # "occupation",
+    # "relationship",
     "race",
     "sex",
-    #"native-country",
+    # "native-country",
 ]
 
 logging.info("*** Slices on train ***")

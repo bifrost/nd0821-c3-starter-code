@@ -5,6 +5,8 @@ from .data import process_data
 import logging
 
 # Optional: implement hyperparameter tuning.
+
+
 def train_model(x_train, y_train):
     """
     Trains a machine learning model and returns it.
@@ -65,33 +67,59 @@ def inference(model, x_data):
     """
     return model.predict(x_data)
 
+
 def get_data_processor(cat_features, encoder, lb, label=None):
     ''' get data processor '''
 
     return partial(process_data,
-                categorical_features=cat_features,
-                label=label,
-                training=False,
-                encoder=encoder,
-                lb=lb)
+                   categorical_features=cat_features,
+                   label=label,
+                   training=False,
+                   encoder=encoder,
+                   lb=lb)
 
 
 def format_bias(ratio, tolerance):
     """ format bias """
 
-    if abs(ratio-1.0)>tolerance:
-        #return f"(\033[91m{ratio:0.3f}\033[0m)"
+    if abs(ratio - 1.0) > tolerance:
+        # return f"(\033[91m{ratio:0.3f}\033[0m)"
         return f"({ratio:0.3f})<====="
     else:
         return f"({ratio:0.3f})"
 
 
-def print_metrics(precision, recall, fbeta, g_precision, g_recall, g_fbeta, tolerance):
+def print_metrics(
+        precision,
+        recall,
+        fbeta,
+        g_precision,
+        g_recall,
+        g_fbeta,
+        tolerance):
     """ Print and format precision, recall, fbeta and their bias """
 
-    logging.info("precision: %.3f %s", precision, format_bias(precision/g_precision, tolerance))
-    logging.info("recall: %.3f %s", recall, format_bias(recall/g_recall, tolerance))
-    logging.info("fbeta: %.3f %s", fbeta, format_bias(fbeta/g_fbeta, tolerance))
+    logging.info(
+        "precision: %.3f %s",
+        precision,
+        format_bias(
+            precision /
+            g_precision,
+            tolerance))
+    logging.info(
+        "recall: %.3f %s",
+        recall,
+        format_bias(
+            recall /
+            g_recall,
+            tolerance))
+    logging.info(
+        "fbeta: %.3f %s",
+        fbeta,
+        format_bias(
+            fbeta /
+            g_fbeta,
+            tolerance))
     logging.info("--------------")
 
 
@@ -103,7 +131,12 @@ def get_model_metrics(data, model, process_data):
     return compute_model_metrics(y_slice, y_pred)
 
 
-def slice_model_metrics(data, categorical_features, model, process_data, tolerance=0.25):
+def slice_model_metrics(
+        data,
+        categorical_features,
+        model,
+        process_data,
+        tolerance=0.25):
     """ Calculating and print metrics on slices of the dataset.
 
     Inputs
@@ -126,16 +159,29 @@ def slice_model_metrics(data, categorical_features, model, process_data, toleran
     """
 
     logging.info("### global metrics ###")
-    g_precision, g_recall, g_fbeta = get_model_metrics(data, model, process_data)
-    print_metrics(g_precision, g_recall, g_fbeta, g_precision, g_recall, g_fbeta, tolerance)
+    g_precision, g_recall, g_fbeta = get_model_metrics(
+        data, model, process_data)
+    print_metrics(
+        g_precision,
+        g_recall,
+        g_fbeta,
+        g_precision,
+        g_recall,
+        g_fbeta,
+        tolerance)
 
     for column in categorical_features:
         for cls in data[column].unique():
             data_slice = data[data[column] == cls]
 
             logging.info("### %s : %s ###", column, cls)
-            precision, recall, fbeta = get_model_metrics(data_slice, model, process_data)
-            print_metrics(precision, recall, fbeta, g_precision, g_recall, g_fbeta, tolerance)
-
-
-
+            precision, recall, fbeta = get_model_metrics(
+                data_slice, model, process_data)
+            print_metrics(
+                precision,
+                recall,
+                fbeta,
+                g_precision,
+                g_recall,
+                g_fbeta,
+                tolerance)
