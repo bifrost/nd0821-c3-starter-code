@@ -36,7 +36,7 @@ From the above metrics the model seems to be over fitted.
 Metrics for slicing data on race and sex.
 
 **Train data**
-We do not see any changes on the train data due to 100% precision an recall, see [log file](file://./log/results.log).
+We do not see any changes on the train data due to **100%** precision an recall, see [log file](file://./log/results.log).
 
 **Test data**
 The following is the metrics for the sliced test data. The value in parentheses is the fraction of current value compared to the global value and will be used to measure the bias for the respective metric. Metrics with an absolute bias that differ more than 25% will be marked with "<=====".
@@ -62,9 +62,9 @@ recall: 0.646 (1.038)
 fbeta: 0.653 (0.976)
 
 **race : Amer-Indian-Eskimo**
-precision: 0.429 (0.593)<=====
+**precision: 0.429 (0.593**)<=====
 recall: 0.600 (0.964)
-fbeta: 0.500 (0.748)<=====
+**fbeta: 0.500 (0.748)**<=====
 
 **race : Other**
 precision: 0.750 (1.038)
@@ -91,4 +91,4 @@ From the metrics above we see that bias is present in some of the features and i
 
 ## Caveats and Recommendations
 
-More pre processing might be necessary to improve the results, for example education and education-num is highly correlated and native-country is highly imbalanced, see [eda](file://./eda.ipynb). We should use stratification when split data if possible. Try to optimize hyperparameters for the model so it does not overfitting the data and genaralize better.
+More pre processing might be necessary to improve the results, for example education and education-num is **highly** correlated and native-country is **highly** imbalanced, see [eda](file://./eda.ipynb). We should use stratification when split data if possible. Try to optimize hyperparameters for the model so it does not overfitting the data and genaralize better.
