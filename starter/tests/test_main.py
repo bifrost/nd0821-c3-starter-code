@@ -2,12 +2,11 @@ from fastapi.testclient import TestClient
 
 from main import app, Census
 
-client = TestClient(app)
-
 
 def test_api_greeting():
     ''' Test greeting endpoint '''
-    result = client.get('/')
+    with TestClient(app) as client:
+        result = client.get('/')
 
     assert result.status_code == 200
     assert result.json() == {'message': 'Hello World!' }
@@ -32,7 +31,8 @@ def test_api_predict_less_or_equal_50K():
         'native-country': 'United-States'
     }]
 
-    result = client.post('/', json=data)
+    with TestClient(app) as client:
+        result = client.post('/', json=data)
 
     assert result.status_code == 200
     assert result.json() == ['<=50K']
@@ -57,7 +57,8 @@ def test_api_predict_greater_50K():
         'native-country': 'United-States'
     }]
 
-    result = client.post('/', json=data)
+    with TestClient(app) as client:
+        result = client.post('/', json=data)
 
     assert result.status_code == 200
     assert result.json() == ['>50K']

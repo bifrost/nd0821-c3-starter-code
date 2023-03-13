@@ -20,4 +20,5 @@ census = [{
 
 response = requests.post(url, json = census)
 
-print(response.json())
+print('status code:', response.status_code)
+print('salary:', response.json())

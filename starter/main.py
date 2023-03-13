@@ -68,21 +68,25 @@ app = FastAPI()
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(ROOT_DIR, '.', 'model', 'model.pkl')
 
-with open(MODEL_PATH, 'rb') as file:
-    model = pickle.load(file)
+@app.on_event("startup")
+async def startup_event():
+    ''' load model on startup '''
 
+    global classifier, lb, process_data
+    with open(MODEL_PATH, 'rb') as file:
+        model = pickle.load(file)
 
-def get_classifier(model):
-    ''' get classifier for prediction '''
+    classifier = model['classifier']
     lb = model['lb']
-    data_processor = get_data_processor(
+    process_data = get_process_data(model)
+
+
+def get_process_data(model):
+    ''' get process_data for prediction '''
+    return get_data_processor(
         cat_features=model['cat_features'],
         encoder=model['encoder'],
-        lb=lb)
-    return model['classifier'], data_processor, lb
-
-
-classifier, process_data, lb = get_classifier(model)
+        lb=model['lb'])
 
 
 @app.get("/")
@@ -107,6 +111,8 @@ async def predict(data: List[Census]) -> List[Salary]:
     model
         Trained machine learning model.
     """
+
+    global classifier, lb, process_data
 
     df_data = pd.DataFrame(jsonable_encoder(data))
     x_data, _, _, _ = process_data(df_data)
