@@ -19,10 +19,8 @@ class Greeting(BaseModel):
     ''' Data class for greeting '''
     message: str
 
-# Note: Field(alias=..) seems not to work as intended,
-# the class cannot be initialized with defined props.
-# A workaround has been added to get_classifier method.
-
+def alias(string: str):
+    return string.replace('_', '-')
 
 class Census(BaseModel):
     ''' Data class for Census '''
@@ -30,19 +28,20 @@ class Census(BaseModel):
     workclass: str
     fnlgt: int
     education: str
-    education_num: int = Field(alias='education-num')
-    marital_status: str = Field(alias='marital-status')
+    education_num: int
+    marital_status: str
     occupation: str
     relationship: str
     race: str
     sex: str
-    capital_gain: int = Field(alias='capital-gain')
-    capital_loss: int = Field(alias='capital-loss')
-    hours_per_week: int = Field(alias='hours-per-week')
-    native_country: str = Field(alias='native-country')
+    capital_gain: int
+    capital_loss: int
+    hours_per_week: int
+    native_country: str
 
     class Config:
         ''' Annotation class for Census '''
+        alias_generator = alias
         schema_extra = {
             "example": {
                 'age': 39,
