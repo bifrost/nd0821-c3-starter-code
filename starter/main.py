@@ -68,6 +68,7 @@ app = FastAPI()
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(ROOT_DIR, '.', 'model', 'model.pkl')
 
+
 @app.on_event("startup")
 async def startup_event():
     ''' load model on startup '''

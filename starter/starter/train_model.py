@@ -104,7 +104,11 @@ def main():
     ]
 
     logging.info("*** Slices on train ***")
-    slice_model_metrics(train, slice_features, classifier, process_data_partial)
+    slice_model_metrics(
+        train,
+        slice_features,
+        classifier,
+        process_data_partial)
 
     logging.info("***********************************************")
 
@@ -117,6 +121,7 @@ def main():
             classifier,
             process_data_partial,
             file=file)
+
 
 if __name__ == "__main__":
     main()
