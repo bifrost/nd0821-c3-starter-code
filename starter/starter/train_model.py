@@ -17,7 +17,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(ROOT_DIR, '..', 'log', 'results.log')
 DATA_PATH = os.path.join(ROOT_DIR, '..', 'data', 'census.csv')
 MODEL_PATH = os.path.join(ROOT_DIR, '..', 'model', 'model.pkl')
-SLICE_PATH = os.path.join(ROOT_DIR, '..', 'data', 'slice_output.txt')
+SLICE_PATH = os.path.join(ROOT_DIR, '..', 'slice_output.txt')
 
 # set up logging
 logging.basicConfig(
@@ -38,79 +38,85 @@ logging.getLogger('').addHandler(console)
 logger = logging.getLogger(__name__)
 
 
-# Add code to load in the data.
-logging.info(f"Load data: {DATA_PATH}")
-data = pd.read_csv(DATA_PATH)
+def main():
+    ''' Train the model '''
 
-# Optional enhancement, use K-fold cross validation instead of a
-# train-test split.
-train, test = train_test_split(data, test_size=0.20)
+    # Add code to load in the data.
+    logging.info(f"Load data: {DATA_PATH}")
+    data = pd.read_csv(DATA_PATH)
 
-logging.info("Data size %d", len(data))
-logging.info("Train size %d", len(train))
-logging.info("Test size %d", len(test))
+    # Optional enhancement, use K-fold cross validation instead of a
+    # train-test split.
+    train, test = train_test_split(data, test_size=0.20)
 
-cat_features = [
-    "workclass",
-    "education",
-    "marital-status",
-    "occupation",
-    "relationship",
-    "race",
-    "sex",
-    "native-country",
-]
+    logging.info("Data size %d", len(data))
+    logging.info("Train size %d", len(train))
+    logging.info("Test size %d", len(test))
 
-# Proces the test data with the process_data function.
-logging.info("Process train data")
-X_train, y_train, encoder, lb = process_data(
-    train, categorical_features=cat_features, label="salary", training=True
-)
+    cat_features = [
+        "workclass",
+        "education",
+        "marital-status",
+        "occupation",
+        "relationship",
+        "race",
+        "sex",
+        "native-country",
+    ]
 
-# Train and save a model.
-logging.info("Train model")
-classifier = train_model(X_train, y_train)
+    # Proces the test data with the process_data function.
+    logging.info("Process train data")
+    X_train, y_train, encoder, lb = process_data(
+        train, categorical_features=cat_features, label="salary", training=True
+    )
 
-model = {
-    "classifier": classifier,
-    "encoder": encoder,
-    "lb": lb,
-    "cat_features": cat_features
-}
+    # Train and save a model.
+    logging.info("Train model")
+    classifier = train_model(X_train, y_train)
 
-logging.info(f"Save model: {MODEL_PATH}")
-with open(MODEL_PATH, 'wb') as file:
-    pickle.dump(model, file)
+    model = {
+        "classifier": classifier,
+        "encoder": encoder,
+        "lb": lb,
+        "cat_features": cat_features
+    }
 
-# make a partial function where X is not "baked in"
-process_data_partial = get_data_processor(
-    cat_features=cat_features,
-    encoder=encoder,
-    lb=lb,
-    label="salary")
+    logging.info(f"Save model: {MODEL_PATH}")
+    with open(MODEL_PATH, 'wb') as file:
+        pickle.dump(model, file)
 
-slice_features = [
-    # "workclass",
-    # "education",
-    # "marital-status",
-    # "occupation",
-    # "relationship",
-    "race",
-    "sex",
-    # "native-country",
-]
+    # make a partial function where X is not "baked in"
+    process_data_partial = get_data_processor(
+        cat_features=cat_features,
+        encoder=encoder,
+        lb=lb,
+        label="salary")
 
-logging.info("*** Slices on train ***")
-slice_model_metrics(train, slice_features, classifier, process_data_partial)
+    slice_features = [
+        # "workclass",
+        # "education",
+        # "marital-status",
+        # "occupation",
+        # "relationship",
+        "race",
+        "sex",
+        # "native-country",
+    ]
 
-logging.info("***********************************************")
+    logging.info("*** Slices on train ***")
+    slice_model_metrics(train, slice_features, classifier, process_data_partial)
 
-logging.info("*** Slices on test ***")
-with open(SLICE_PATH, 'w', encoding="utf-8") as file:
-    file.write("*** Slices on test ***\n")
-    slice_model_metrics(
-        test,
-        slice_features,
-        classifier,
-        process_data_partial,
-        file=file)
+    logging.info("***********************************************")
+
+    logging.info("*** Slices on test ***")
+    with open(SLICE_PATH, 'w', encoding="utf-8") as file:
+        file.write("*** Slices on test ***\n")
+        slice_model_metrics(
+            test,
+            slice_features,
+            classifier,
+            process_data_partial,
+            file=file)
+
+if __name__ == "__main__":
+    main()
