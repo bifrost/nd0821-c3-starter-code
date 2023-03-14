@@ -16,8 +16,9 @@ Model card:
 
 The png images for the API test:
 * screenshots/example.png
+* screenshots/live_get.png
 * screenshots/live_post.png
-* continuous_deployment.png
+* screenshots/continuous_deployment.png
 
 The test script for the POST:
 * live_post.py
